@@ -139,8 +139,21 @@ Model weights and corresponding prediction maps for all configurations are avail
 
 run ./scripts/inference.sh
 
+## Quantitative Comparison
+<p align="center">
+  <img src="Quantitative_Comparison_SOD.png" alt="arch" width="100%">
+</p>
+<p align="center">
+  <img src="Quantitative_Comparison_COD.png" alt="arch" width="100%">
+</p>
+<p align="center">
+  <img src="Quantitative_Comparison_USOD.png" alt="arch" width="100%">
+</p>
 
 Here you can download saliency maps of SOD/COD/USOD tasks from other awesome models: [BaiduNetDisk](https://pan.baidu.com/s/12qQV7aBJCzPc1pVTDsO_QQ?pwd=fq3u)
+
+
+
 
 ## Citation
 
