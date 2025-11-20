@@ -2,8 +2,8 @@
 <h1>DGNet</h1>
 <h3>DualGazeNet: A Biologically Inspired Dual-Gaze Query Network for Salient Object Detection
 </h3>
-<!-- Yu Zhang, Haoan Ping, Yuchen Li, Zhenshan Bing, Wei He, Fellow, IEEE,
-Fuchun Sun, Fellow, IEEE, Alois Knoll, Fellow, IEEE -->
+Yu Zhang, Haoan Ping, Yuchen Li, Zhenshan Bing, Wei He, Fellow, IEEE,
+Fuchun Sun, Fellow, IEEE, Alois Knoll, Fellow, IEEE
 
 Technical University of Munich
 
@@ -12,7 +12,7 @@ Technical University of Munich
 
 
 ## Abstract
-DualGazeNet is a biologically inspired Transformer framework for salient object detection, designed with dual-path processing inspired by the human visual system. It achieves state-of-the-art performance on five RGB SOD benchmarks as well as 4 COD benchmarks and USOD10 dataset. 
+DualGazeNet is a biologically inspired Transformer framework for salient object detection, designed with dual-path processing inspired by the human visual system. It achieves state-of-the-art performance on five RGB SOD benchmarks as well as 4 COD benchmarks and USOD10K dataset. 
 
 ## Overview
 <p align="center">
