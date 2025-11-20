@@ -25,13 +25,6 @@ DualGazeNet is a biologically inspired Transformer framework for salient object 
 
 * **`Nov 17, 2025`:**   We released DGNet codes.
 
-<!-- * **`Nov 17, 2025`:**  We released our paper on [arXiv](). -->
-
-
-<!-- <p align="center">
-  <img src="assets/overall.png" alt="arch" width="80%">
-</p> -->
-
 ## Usage
 
 ### Installation
