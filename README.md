@@ -91,29 +91,9 @@ For convenience, we provide **pre-configured versions** with consistent formatti
 
 ##### Train
 
-Download [Pretrained Backbones]() and save it in ./weights
+Download [Pretrained Backbones](https://pan.baidu.com/s/1Ovd7A_fVi7uxjeY2Z3IzjA?pwd=f116) and save it in ./weights
 
 run ./scripts/train.sh
-
-```bash
-sh ./scripts/train.sh
-```
-
-Example train.sh is demonstrated as followed
-```
-python train.py \
-    --mode train \
-    --task SOD \
-    --backbone L \
-    --input_size 512 \
-    --device cuda \
-    --batch_size_train 8 \
-    --max_epoch_num 100 \
-    --model_save_fre 3 \
-    --eval_interval 3 \
-    --output_dir "./output" \
-    --resume_cpt "" \
-```
 
 ##### Evaluation and Predicted Saliency Map 
 
