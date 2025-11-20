@@ -81,11 +81,11 @@ pip install -r requirements.txt
 ````
 All datasets are publicly available from their official sources: [DUTS](http://saliencydetection.net/duts/), [DUT-OMRON](http://saliencydetection.net/dut-omron/), [HKU-IS](https://i.cs.hku.hk/~yzyu/research/deep_saliency.html), [ECSSD](https://www.cse.cuhk.edu.hk/leojia/projects/hsaliency/dataset.html), and [PASCAL-S](https://cbs.ic.gatech.edu/salobj/).
 
-For convenience, we provide **pre-configured versions** with consistent formatting in our [Google Drive Folder](https://drive.google.com/drive/folders/1CNz9q5MHSsYV9jgqjK-tPd2ZxZIMjUfU?usp=drive_link), which also includes datasets for **COD** and **USOD** tasks.
+For convenience, we provide **pre-configured versions** with consistent formatting in our [BaiduNetDisk Folder](), which also includes datasets for **COD** and **USOD** tasks.
 
 ##### Train
 
-Download [Pretrained Backbones](https://drive.google.com/drive/folders/118CyQETQtxCrIo9aejBpBdIT_L06tiSy?usp=drive_link) and save it in ./weights
+Download [Pretrained Backbones]() and save it in ./weights
 
 run ./scripts/train.sh
 
@@ -111,24 +111,22 @@ python train.py \
 
 ##### Evaluation and Predicted Saliency Map 
 
-Download our pretrained checkpoint or train your own model!
+Model weights and corresponding prediction maps for all configurations are available for download. Access the full dataset in our [Google Drive Folder](https://drive.google.com/drive/folders/1t9_lETBB1H-1uc-mIukHFlTe7dzbAaRU?usp=drive_link), or retrieve specific items individually from the following table.
 
 | Task | Backbone | Resolution | Params(M) | FLOPs(G) | FPS | Checkpoint | Saliency Map |
 | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| SOD | Hiera-L | 512×512 | 247.56 | 238.52 | 43 | [checkpoint]() |  [Results]() |
-| SOD | Hiera-L | 352×352 | 247.56 | 139.07 | 45 | [checkpoint]() |  [Results]() |
-| SOD | Hiera-L | 224×224 | 247.56 | 48.59 | 46 | [checkpoint]() |  [Results]() |
-| SOD | Hiera\*-L | 512×512 | 162.32 | 217.11 | 48 | [checkpoint]() |  [Results]() |
-| SOD | Hiera\*-L | 352×352 | 162.32 | 126.27 | 50 | [checkpoint]() |  [Results]() |
-| SOD | Hiera\*-L | 224×224 | 162.32 | 44.19 | 52 | [checkpoint]() |  [Results]() |
-| SOD | Hiera-B | 512×512 | 91.92 | 102.78 | 61 | [checkpoint]() |  [Results]() |
-| SOD | Hiera-B | 352×352 | 91.92 | 47.95 | 64 | [checkpoint]() |  [Results]() |
-| SOD | Hiera-B | 224×224 | 91.92 | 17.89 | 69 | [checkpoint]() |  [Results]() |
-| SOD | Hiera\*-B | 512×512 | 49.23 | 83.47 | 72 | [checkpoint]() |  [Results]() |
-| SOD | Hiera\*-B | 352×352 | 49.23 | 39.13 | 77 | [checkpoint]() |  [Results]() |
-| SOD | Hiera\*-B | 224×224 | 49.23 | 18.86 | 78 | [checkpoint]() |  [Results]() |
-| SOD | PVT-v2-B5 | 384×384 | 92.94 | 47.16 | 36 | [checkpoint]() |  [Results]() |
-| SOD | Swin-B | 320×320 | 115.56 | 43.64 | 58 | [checkpoint]() |  [Results]() |
+| SOD | Hiera-L | 512×512 | 247.56 | 238.52 | 43 | [checkpoint]() |  [Results](https://drive.google.com/file/d/1ndHItAE1U9xEPMQPXHCuXn7VSCUlpiPQ/view?usp=drive_link) |
+| SOD | Hiera-L | 352×352 | 247.56 | 139.07 | 45 | [checkpoint](https://drive.google.com/file/d/17GSLdBkXw2MaX-9EOVU2UisCldMFuECl/view?usp=drive_link) |  [Results](https://drive.google.com/file/d/1RvOBBJ0ypnnTBFzVi1MgEbM-vN8TPZ5n/view?usp=drive_link) |
+| SOD | Hiera-L | 224×224 | 247.56 | 48.59 | 46 | [checkpoint](https://drive.google.com/file/d/1t1UPzjkBYSQfoTv2voI3Dbz-b3XErLrc/view?usp=drive_link) |  [Results](https://drive.google.com/file/d/1HCCBoJgQw5EEl1ABE7M0XAOAJz2BFDDl/view?usp=drive_link) |
+| SOD | Hiera\*-L | 512×512 | 162.32 | 217.11 | 48 | [checkpoint](https://drive.google.com/file/d/1WteXk2Qx7Erh0cKnQOiW3yeuCKvlXIfC/view?usp=drive_link) |  [Results](https://drive.google.com/file/d/1ndHItAE1U9xEPMQPXHCuXn7VSCUlpiPQ/view?usp=drive_link) |
+| SOD | Hiera\*-L | 352×352 | 162.32 | 126.27 | 50 | [checkpoint](https://drive.google.com/file/d/1NlE2mahsCWrq14OrnY37js2GlJeJ--x-/view?usp=drive_link) |  [Results](https://drive.google.com/file/d/1RvOBBJ0ypnnTBFzVi1MgEbM-vN8TPZ5n/view?usp=drive_link) |
+| SOD | Hiera\*-L | 224×224 | 162.32 | 44.19 | 52 | [checkpoint](https://drive.google.com/file/d/1lkKwkq9SH_uZ-lYv3lhkkyo9MOJ11hh1/view?usp=drive_link) |  [Results](https://drive.google.com/file/d/1HCCBoJgQw5EEl1ABE7M0XAOAJz2BFDDl/view?usp=drive_link) |
+| SOD | Hiera-B | 512×512 | 91.92 | 102.78 | 61 | [checkpoint](https://drive.google.com/file/d/1ffmAzkHG2CW2woMkd3bvp20QnEdWYETw/view?usp=drive_link) |  [Results](https://drive.google.com/file/d/1zuz9lvB_fX1TXPKg9a9rkYLrikHgEAAX/view?usp=drive_link) |
+| SOD | Hiera-B | 352×352 | 91.92 | 47.95 | 64 | [checkpoint](https://drive.google.com/file/d/12nHB1ssEuNGyW-DqUAwouhzITJzrR-ys/view?usp=drive_link) |  [Results](https://drive.google.com/file/d/1LXlydXF_ixFuGhUGhGRqX9CHxw30kZ29/view?usp=drive_link) |
+| SOD | Hiera-B | 224×224 | 91.92 | 17.89 | 69 | [checkpoint](https://drive.google.com/file/d/1fhRfFLkt9AlmRBn7Oayz7n3IXsHAhQxn/view?usp=drive_link) |  [Results](https://drive.google.com/file/d/1ZDvLlcZgPI1OktAe0D3yhzvjzzrqKNZK/view?usp=drive_link) |
+| SOD | Hiera\*-B | 512×512 | 49.23 | 83.47 | 72 | [checkpoint](https://drive.google.com/file/d/1yE-X8u1PQUHSs9EvBMsALbwyZBaJuM29/view?usp=drive_link) |  [Results](https://drive.google.com/file/d/1jSWIKtamwFobkIb3UQwfazNdLH9pDxXu/view?usp=drive_link) |
+| SOD | Hiera\*-B | 352×352 | 49.23 | 39.13 | 77 | [checkpoint](https://drive.google.com/file/d/1NaSONPsHWTKAqxYk7BFgLdIhPYes_YPT/view?usp=drive_link) |  [Results](https://drive.google.com/file/d/15X6E3XKVJZT_8ZIhA2if6AwQnZ6mFsGs/view?usp=drive_link) |
+| SOD | Hiera\*-B | 224×224 | 49.23 | 18.86 | 78 | [checkpoint](https://drive.google.com/file/d/1nxVqLB6ikzy56UMQEeYfE3l6BA1jE-a5/view?usp=drive_link) |  [Results](https://drive.google.com/file/d/1u1Bo7EvEk08vy8vHAC_1YWA9eWjYoZYp/view?usp=drive_link) |
 | COD | Hiera-L | 512×512 | 247.56 | 238.52 | 43 | [checkpoint]() |  [Results]() |
 | USOD | Hiera-L | 512×512 | 247.56 | 238.52 | 43 | [checkpoint]() |  [Results]() |
 
