@@ -87,7 +87,7 @@ pip install -r requirements.txt
 ````
 All datasets are publicly available from their official sources: [DUTS](http://saliencydetection.net/duts/), [DUT-OMRON](http://saliencydetection.net/dut-omron/), [HKU-IS](https://i.cs.hku.hk/~yzyu/research/deep_saliency.html), [ECSSD](https://www.cse.cuhk.edu.hk/leojia/projects/hsaliency/dataset.html), and [PASCAL-S](https://cbs.ic.gatech.edu/salobj/).
 
-For convenience, we provide **pre-configured versions** with consistent formatting in our [BaiduNetDisk Folder](), which also includes datasets for **COD** and **USOD** tasks.
+For convenience, we provide **pre-configured versions** with consistent formatting in our [BaiduNetDisk Folder](https://pan.baidu.com/s/11-eVRNce7thlrZKXtyzgug?pwd=84bw), which also includes datasets for **COD** and **USOD** tasks.
 
 ##### Train
 
