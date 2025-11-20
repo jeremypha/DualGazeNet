@@ -12,12 +12,14 @@ Technical University of Munich
 
 
 ## Abstract
-
+DualGazeNet is a biologically inspired Transformer framework for salient object detection, designed with dual-path processing inspired by the human visual system. It achieves state-of-the-art performance on five RGB SOD benchmarks as well as 4 COD benchmarks and USOD10 dataset. 
 
 ## Overview
 
 ## News
-* **`Nov 17, 2025`:**   We released DGNet codes, the well-trained weights under different configs for SOD/COD/USOD tasks with various resolutions. We also provide the corresponding datasets, the pretrained backbone weights and their prediction maps from both our models and other SOTA models. They can all be obtained in my [Google Drive Folder]()
+* **`Nov 20, 2025`:**   We released the well-trained weights under different configs for SOD/COD/USOD tasks with various resolutions. We also provide the corresponding datasets, the pretrained backbone weights and their prediction maps from both our models and other SOTA models.
+
+* **`Nov 17, 2025`:**   We released DGNet codes.
 
 <!-- * **`Nov 17, 2025`:**  We released our paper on [arXiv](). -->
 
