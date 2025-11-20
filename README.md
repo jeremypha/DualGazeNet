@@ -114,7 +114,7 @@ python train.py \
 Download our pretrained checkpoint or train your own model!
 
 | Task | Backbone | Resolution | Params(M) | FLOPs(G) | FPS | Checkpoint | Saliency Map |
-| :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
 | SOD | Hiera-L | 512×512 | 247.56 | 238.52 | 43 | [checkpoint]() |  [Results]() |
 | SOD | Hiera-L | 352×352 | 247.56 | 139.07 | 45 | [checkpoint]() |  [Results]() |
 | SOD | Hiera-L | 224×224 | 247.56 | 48.59 | 46 | [checkpoint]() |  [Results]() |
