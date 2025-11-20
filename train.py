@@ -28,7 +28,7 @@ def get_args_parser():
                         help="Train or test")   
 
     parser.add_argument('--task', 
-                    default='SOD', 
+                    required=True,
                     type=str,
                     choices=['SOD', 'COD', 'USOD'],
                     help='Task type: SOD (Salient Object Detection), ' \
@@ -37,7 +37,7 @@ def get_args_parser():
     
      # Model configuration
     parser.add_argument('--backbone', 
-                    default='L', 
+                    required=True, 
                     type=str,
                     choices=['L', 'L*', 'B', 'B*', 'P', 'S'],
                     help='backbone type: L : (Hiera-L), ' \
@@ -54,8 +54,8 @@ def get_args_parser():
     # Training configuration
     parser.add_argument("--device", type=str, default="cuda")
 
-    parser.add_argument('--batch_size_train', default=8, type=int,
-                    help='Batch size for training')
+    parser.add_argument('--batch_size_train', default=4, type=int,
+                        help='Batch size for training')
 
     parser.add_argument('--max_epoch_num', default=100, type=int, 
                         help='Maximum number of training epochs')
@@ -67,7 +67,7 @@ def get_args_parser():
                         help='Frequency (in epochs) for running evaluation')
     
     # Path configuration
-    parser.add_argument("--output_dir", type=str, default='/root/autodl-tmp/train_output/DGN_L_new',
+    parser.add_argument("--output_dir", type=str, default='./output',
                         help="Path to the directory where checkpoints and records will be output")
 
     parser.add_argument("--resume_cpt", type=str,
@@ -76,10 +76,10 @@ def get_args_parser():
 
     parser.add_argument("--visualize", type=str,
                         default = False,
-                        help="")
+                        help="Whether to save the prediction")
 
     parser.add_argument("--pred_dir", type=str,
-                        default = '',
+                        default = './pred',
                         help="Path to the directory where predictions will be saved")
 
     return parser.parse_args() 
@@ -92,6 +92,7 @@ class Trainer:
         self.train_datasets = train_datasets 
         self.valid_datasets = valid_datasets
         self.config = config
+        
         self.args = args
 
         # Initialize all components
@@ -100,12 +101,17 @@ class Trainer:
         self._setup_dataloaders() 
         self._setup_optimizer()
         self._load_checkpoint()
-        
+
         if args.mode == 'train':
+            self.output_dir=f'{self.args.output_dir}/{self.args.task}_{self.args.backbone}'
+            os.makedirs(self.output_dir, exist_ok=True)
             # Results files
             timestamp = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
-            self.test_results_file = os.path.join(args.output_dir, self.args.task, self.args.backbone, f"test_results_{timestamp}.txt")
-            self.train_results_file = os.path.join(args.output_dir, self.args.task, self.args.backbone, f"train_results_{timestamp}.txt")
+            self.test_results_file = os.path.join(self.output_dir, f"test_results_{timestamp}.txt")
+            self.train_results_file = os.path.join(self.output_dir, f"train_results_{timestamp}.txt")
+        
+        if args.visualize:
+            self.pred_dir=f'{self.args.pred_dir}/{self.args.task}_{self.args.backbone}'
     
     def _set_seed(self, seed):
         """Set random seeds for reproducibility"""
@@ -147,9 +153,32 @@ class Trainer:
     
     def _setup_optimizer(self):
         """Configure optimizer and learning rate scheduler"""
+        # Training strategies:
+        # - Swin/PVT: full finetune (encoder: 0.1*lr, other: full lr)  
+        # - Hiera: apply adaptor
         print("--- Defining optimizer ---")
+        if self.args.backbone in ['P', 'S']: 
+            encoder_params = []
+            other_params = []
+            
+            for name, param in self.net.named_parameters():
+                if not param.requires_grad:
+                    continue
+                if name.startswith('encoder.'):
+                    encoder_params.append(param)
+                else:
+                    other_params.append(param)
+            
+            param_groups = [
+                {"params": other_params, "initial_lr": self.config.lr},
+                {"params": encoder_params, "lr": self.config.lr * 0.1, "initial_lr": self.config.lr * 0.1}
+            ]
+
+        else:   
+            param_groups = [{"params": self.net.parameters(), "initial_lr": self.config.lr}]
+        
         self.optimizer = torch.optim.AdamW(
-            [{"params": self.net.parameters(), "initial_lr": self.config.lr}], 
+            param_groups,
             lr=self.config.lr, 
             weight_decay=self.config.weight_decay
         )
@@ -159,10 +188,10 @@ class Trainer:
             if epoch < self.config.warmup_epochs:
                 return float(epoch + 1) / self.config.warmup_epochs
             else:
-                return (0.98 ** (epoch - self.config.warmup_epochs))
+                return 0.98 ** (epoch - self.config.warmup_epochs)
         
         self.lr_scheduler = LambdaLR(self.optimizer, lr_lambda=lr_lambda)
-    
+        
     def _load_checkpoint(self):
         """Load checkpoint for resuming training"""
         if not self.args.resume_cpt:
@@ -198,7 +227,7 @@ class Trainer:
                 
                 # Save model
                 model_name = f"epoch_{epoch}.pth"
-                model_path = os.path.join(self.args.output_dir, self.args.task, self.args.backbone, model_name)       
+                model_path = os.path.join(self.output_dir, model_name)       
                 checkpoint = self._create_checkpoint(epoch)
                 torch.save(checkpoint, model_path)
                 print(f'Saving model to: {model_path}')
@@ -297,7 +326,6 @@ class Trainer:
                 FM = metrics.Fmeasure()
                 
                 for data in tqdm(valid_dataloader, ncols=100):
-                    name = data['name']
                     image = data['image'].to(self.args.device)
                     gt_ori = data['gt_ori'].squeeze(0)
                     
@@ -310,8 +338,10 @@ class Trainer:
                     ori_label = gt_ori.cpu().numpy().astype(np.uint8)
 
                     if self.args.visualize:
-                        os.makedirs(self.args.pred_dir, exist_ok=True)
-                        cv2.imwrite(os.path.join('./pred', name + '.png'), pred)
+                        name = data['name'][0]
+                        pred_dir = os.path.join(self.pred_dir, dataset_name)
+                        os.makedirs(pred_dir, exist_ok=True)
+                        cv2.imwrite(os.path.join(pred_dir, name + '.png'), pred)
 
                     FM.step(pred=pred, gt=ori_label)
                     WFM.step(pred=pred, gt=ori_label)

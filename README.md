@@ -16,7 +16,7 @@ Technical University of Munich
 
 ## Overview
 
-## News :newspaper:
+## News
 * **`Nov 17, 2025`:**   We released DGNet codes, the well-trained weights under different configs for SOD/COD/USOD tasks with various resolutions. We also provide the corresponding datasets, the pretrained backbone weights and their prediction maps from both our models and other SOTA models. They can all be obtained in my [Google Drive Folder]()
 
 <!-- * **`Nov 17, 2025`:**  We released our paper on [arXiv](). -->
@@ -34,7 +34,7 @@ Technical University of Munich
 Clone this repository
 
 ```bash
-# https://github.com/BellyBeauty/MDSAM.git
+git clone https://github.com/jeremypha/DualGazeNet.git
 cd DGN
 ```
 
@@ -43,8 +43,8 @@ cd DGN
 ##### Create a new conda environment
 
 ```bash
-conda create --name mdsam python=3.9
-conda activate mdsam
+conda create --name dgnet
+conda activate dgnet
 ```
 
 ##### Install Dependencies
@@ -58,23 +58,23 @@ pip install -r requirements.txt
 -- datasets
     |-- SOD
     |    |-- DUTS-TR
-    |    |   |-- image
-    |    |   |-- mask
+    |    |   |-- im
+    |    |   |-- gt
     |    |-- DUTS-TE
-    |    |   |-- image
-    |    |   |-- mask
+    |    |   |-- im
+    |    |   |-- gt
     |    |-- DUT-OMRON
-    |    |   |-- image
-    |    |   |-- mask
+    |    |   |-- im
+    |    |   |-- gt
     |    |-- ECSSD
-    |    |   |-- image
-    |    |   |-- mask
+    |    |   |-- im
+    |    |   |-- gt
     |    |-- HKU-IS
-    |    |   |-- image
-    |    |   |-- mask
+    |    |   |-- im
+    |    |   |-- gt
     |    |-- PASCAL-S
-    |    |   |-- image
-    |    |   |-- mask
+    |    |   |-- im
+    |    |   |-- gt
     |-- COD
     |-- USOD
 
@@ -113,7 +113,7 @@ python train.py \
 
 Download our pretrained checkpoint or train your own model!
 
-| Task | Backbone | Resolution | Params<br>(M) | FLOPs<br>(G) | FPS | Checkpoint | Saliency Map |
+| Task | Backbone | Resolution | Params(M) | FLOPs(G) | FPS | Checkpoint | Saliency Map |
 | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
 | SOD | Hiera-L | 512×512 | 247.56 | 238.52 | 43 | [checkpoint]() |  [Results]() |
 | SOD | Hiera-L | 352×352 | 247.56 | 139.07 | 45 | [checkpoint]() |  [Results]() |
@@ -151,6 +151,8 @@ python inference.py \
     --pred_dir "./pred"
 ```
 
+
+Here you can download saliency maps of SOD/COD/USOD tasks from other awesome models: [BaiduNetDisk](https://pan.baidu.com/s/12qQV7aBJCzPc1pVTDsO_QQ?pwd=fq3u)
 
 ## Citation
 

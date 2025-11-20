@@ -15,6 +15,17 @@ from modeling.DGN import DGN
 
 def parse_args():
     parser = argparse.ArgumentParser(description="DGN evaluation script.")
+    parser.add_argument('--backbone', 
+                    required=True, 
+                    type=str,
+                    choices=['L', 'L*', 'B', 'B*', 'P', 'S'],
+                    help='backbone type: L : (Hiera-L), ' \
+                                        'L*: (pruned Hiera-L), ' \
+                                        'B : (Hiera-B), ' \
+                                        'B*: (pruned Hiera-L), ' \
+                                        'P : (pvt_v2_b5), ' \
+                                        'S : (swin_b), ' \
+                                    )
     parser.add_argument(
         "--checkpoint", type=str, required=True,
         help="Path to model checkpoint"
@@ -103,13 +114,11 @@ def process_single_image(image_path, model, device, input_size):
 def main():
     args = parse_args()
 
-    # Create output directory
-    pred_dir = Path(args.pred_dir)
-    pred_dir.mkdir(parents=True, exist_ok=True)
+    os.makedirs(args.pred_dir, exist_ok=True)
     
     # Load model
     print(f"Loading model from {args.checkpoint}")
-    net = DGN().to(args.device)
+    net = DGN(pretrained=False, backbone=args.backbone).to(args.device)
     checkpoint = torch.load(args.checkpoint, map_location='cpu', weights_only=True)
     net.load_state_dict(checkpoint['net'], strict=True)
     net.eval()
@@ -120,8 +129,8 @@ def main():
     # Process images
     for image_path in image_paths:
         pred = process_single_image(image_path, net, args.device, args.input_size)
-        output_path = pred_dir / image_path.name.replace(args.image_ext, '.png')
-        cv2.imwrite(str(output_path), pred)
+        output_path = os.path.join(args.pred_dir, image_path.name.replace(args.image_ext, '.png'))
+        cv2.imwrite(output_path, pred)
 
     print(f"\nProcessing completed")
 

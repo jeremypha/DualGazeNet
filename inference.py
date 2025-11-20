@@ -15,7 +15,7 @@ def get_args_parser():
                         help="Train or test")
     
     parser.add_argument('--task', 
-                    default='SOD', 
+                    required=True,  
                     type=str,
                     choices=['SOD', 'COD', 'USOD'],
                     help='Task type: SOD (Salient Object Detection), ' \
@@ -24,7 +24,7 @@ def get_args_parser():
     
      # Model configuration
     parser.add_argument('--backbone', 
-                    default='B', 
+                    required=True, 
                     type=str,
                     choices=['L', 'L*', 'B', 'B*', 'P', 'S'],
                     help='backbone type: L : (Hiera-L), ' \
@@ -35,17 +35,17 @@ def get_args_parser():
                                         'S : (swin_b), ' \
                                     )
 
-    parser.add_argument("--input_size", type=int, default=224,
+    parser.add_argument("--input_size", type=int, default=512,
                         help="The size of input images")   
     
     parser.add_argument("--device", type=str, default="cuda")
 
     # Path configuration
     parser.add_argument("--resume_cpt", type=str,
-                        default = '/root/autodl-tmp/train_output/Final_Path/DGN_B_224.pth',
+                        required=True,
                         help="The path to the checkpoint")
     
-    parser.add_argument('--visualize', default=False, type=bool,
+    parser.add_argument('--visualize', default=True, type=bool,
                     help='Generate and save saliency map visualizations during inference')
 
     parser.add_argument("--pred_dir", type=str, default='./pred',

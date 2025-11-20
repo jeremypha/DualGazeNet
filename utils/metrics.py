@@ -1,10 +1,5 @@
-# Adapted from
-# https://github.com/BellyBeauty/MDSAM/blob/master/py_sod_metrics/sod_metrics.py
-
-
 # -*- coding: utf-8 -*-
 import numpy as np
-from typing import Dict, Tuple, List, Optional
 from scipy.ndimage import convolve
 from scipy.ndimage import distance_transform_edt as bwdist
 
@@ -44,192 +39,113 @@ def get_adaptive_threshold(matrix: np.ndarray, max_value: float = 1) -> float:
     return min(2 * matrix.mean(), max_value)
 
 
-class Fmeasure:
-    """
-    F-measure calculator for Salient Object Detection.
-    
-    Implementation based on:
-    @inproceedings{Fmeasure,
-        title={Frequency-tuned salient region detection},
-        author={Achanta, Radhakrishna and Hemami, Sheila and Estrada, Francisco and Süsstrunk, Sabine},
-        booktitle=CVPR,
-        pages={1597--1604},
-        year={2009}
-    }
-    
-    Args:
-        beta (float): Weight parameter for precision in F-measure calculation. 
-                     Defaults to 0.3 as in the original paper.
-    """
-    
+class Fmeasure(object):
     def __init__(self, beta: float = 0.3):
+        """
+        F-measure for SOD.
+
+        ::
+
+            @inproceedings{Fmeasure,
+                title={Frequency-tuned salient region detection},
+                author={Achanta, Radhakrishna and Hemami, Sheila and Estrada, Francisco and S{\"u}sstrunk, Sabine},
+                booktitle=CVPR,
+                number={CONF},
+                pages={1597--1604},
+                year={2009}
+            }
+
+        :param beta: the weight of the precision
+        """
         self.beta = beta
-        self.beta_squared = beta ** 2
-        self._reset_accumulators()
-    
-    def _reset_accumulators(self) -> None:
-        """Reset all accumulators for new evaluation."""
-        self.precisions: List[np.ndarray] = []
-        self.recalls: List[np.ndarray] = []
-        self.adaptive_fms: List[float] = []
-        self.changeable_fms: List[np.ndarray] = []
-        self.max_fms: List[float] = []
-    
-    def step(self, pred: np.ndarray, gt: np.ndarray) -> None:
-        """
-        Process a single prediction-ground truth pair.
-        
-        Args:
-            pred: Prediction array with values in [0, 1]
-            gt: Ground truth array with values in {0, 1}
-        """
+        self.precisions = []
+        self.recalls = []
+        self.adaptive_fms = []
+        self.changeable_fms = []
+        self.max_fms = []
+
+    def step(self, pred: np.ndarray, gt: np.ndarray):
         pred, gt = prepare_data(pred, gt)
-        
-        # Calculate adaptive F-measure
-        adaptive_fm = self._calculate_adaptive_fm(pred, gt)
+
+        adaptive_fm = self.cal_adaptive_fm(pred=pred, gt=gt)
         self.adaptive_fms.append(adaptive_fm)
-        
-        # Calculate precision-recall curves and F-measures
-        precisions, recalls, changeable_fms, max_fm = self._calculate_pr_curves(pred, gt)
+
+        precisions, recalls, changeable_fms, max_fms = self.cal_pr(pred=pred, gt=gt)
         self.precisions.append(precisions)
         self.recalls.append(recalls)
         self.changeable_fms.append(changeable_fms)
-        self.max_fms.append(max_fm)
-    
-    def _calculate_adaptive_fm(self, pred: np.ndarray, gt: np.ndarray) -> float:
+        self.max_fms.append(max_fms)
+
+    def cal_adaptive_fm(self, pred: np.ndarray, gt: np.ndarray) -> float:
         """
-        Calculate F-measure using adaptive threshold.
-        
-        Args:
-            pred: Normalized prediction in [0, 1]
-            gt: Binary ground truth
-            
-        Returns:
-            Adaptive F-measure value
+        Calculate the adaptive F-measure.
+
+        :return: adaptive_fm
         """
+        # ``np.count_nonzero`` is faster and better
         adaptive_threshold = get_adaptive_threshold(pred, max_value=1)
-        binary_prediction = pred >= adaptive_threshold
-        
-        # Calculate intersection and cardinalities
-        intersection = np.count_nonzero(binary_prediction & gt)
-        pred_positives = np.count_nonzero(binary_prediction)
-        gt_positives = np.count_nonzero(gt)
-        
-        # Handle edge cases
-        if intersection == 0:
-            return 0.0
-        
-        precision = intersection / pred_positives
-        recall = intersection / gt_positives
-        
-        # F-measure formula: (1 + β²) * precision * recall / (β² * precision + recall)
-        return (1 + self.beta_squared) * precision * recall / (self.beta_squared * precision + recall)
-    
-    def _calculate_pr_curves(self, pred: np.ndarray, gt: np.ndarray) -> Tuple[np.ndarray, np.ndarray, np.ndarray, float]:
+        binary_predcition = pred >= adaptive_threshold
+        area_intersection = binary_predcition[gt].sum()
+        if area_intersection == 0:
+            adaptive_fm = 0
+        else:
+            pre = area_intersection / np.count_nonzero(binary_predcition)
+            rec = area_intersection / np.count_nonzero(gt)
+            adaptive_fm = (1 + self.beta) * pre * rec / (self.beta * pre + rec)
+        return adaptive_fm
+
+    def cal_pr(self, pred: np.ndarray, gt: np.ndarray) -> tuple:
         """
-        Calculate precision-recall curves for all thresholds (0-255).
-        
-        Args:
-            pred: Normalized prediction in [0, 1]
-            gt: Binary ground truth
-            
-        Returns:
-            Tuple of (precisions, recalls, fmeasures, max_fmeasure)
+        Calculate the corresponding precision and recall when the threshold changes from 0 to 255.
+
+        These precisions and recalls can be used to obtain the mean F-measure, maximum F-measure,
+        precision-recall curve and F-measure-threshold curve.
+
+        For convenience, ``changeable_fms`` is provided here, which can be used directly to obtain
+        the mean F-measure, maximum F-measure and F-measure-threshold curve.
+
+        :return: precisions, recalls, changeable_fms
         """
-        # Convert to 8-bit for histogram calculation
-        pred_uint8 = (pred * 255).astype(np.uint8)
-        
-        # Calculate histograms for foreground and background
-        bins = np.arange(257)  # 0 to 256
-        fg_hist, _ = np.histogram(pred_uint8[gt], bins=bins)
-        bg_hist, _ = np.histogram(pred_uint8[~gt], bins=bins)
-        
-        # Cumulative histograms for thresholds (from high to low)
-        # flip + cumsum gives counts for thresholds >= value
-        fg_cumulative = np.cumsum(np.flip(fg_hist))
-        bg_cumulative = np.cumsum(np.flip(bg_hist))
-        
-        # Calculate TP, FP, FN for all thresholds
-        true_positives = fg_cumulative
-        false_positives = bg_cumulative
-        total_predictions = true_positives + false_positives
-        gt_positives = max(np.count_nonzero(gt), 1)  # Avoid division by zero
-        
-        # Calculate precision and recall
-        precisions = np.divide(true_positives, total_predictions, 
-                              out=np.zeros_like(true_positives, dtype=float),
-                              where=total_predictions != 0)
-        
-        recalls = true_positives / gt_positives
-        
-        # Calculate F-measures for all thresholds
-        fmeasures = self._compute_fmeasure(precisions, recalls)
-        max_fmeasure = np.max(fmeasures)
-        
-        return precisions, recalls, fmeasures, max_fmeasure
-    
-    def _compute_fmeasure(self, precisions: np.ndarray, recalls: np.ndarray) -> np.ndarray:
+        # 1. 获取预测结果在真值前背景区域中的直方图
+        pred = (pred * 255).astype(np.uint8)
+        bins = np.linspace(0, 256, 257)
+        fg_hist, _ = np.histogram(pred[gt], bins=bins)  # 最后一个bin为[255, 256]
+        bg_hist, _ = np.histogram(pred[~gt], bins=bins)
+        # 2. 使用累积直方图（Cumulative Histogram）获得对应真值前背景中大于不同阈值的像素数量
+        # 这里使用累加（cumsum）就是为了一次性得出 >=不同阈值 的像素数量, 这里仅计算了前景区域
+        fg_w_thrs = np.cumsum(np.flip(fg_hist), axis=0)
+        bg_w_thrs = np.cumsum(np.flip(bg_hist), axis=0)
+        # 3. 使用不同阈值的结果计算对应的precision和recall
+        # p和r的计算的真值是pred==1&gt==1，二者仅有分母不同，分母前者是pred==1，后者是gt==1
+        # 为了同时计算不同阈值的结果，这里使用hsitogram&flip&cumsum 获得了不同各自的前景像素数量
+        TPs = fg_w_thrs
+        Ps = fg_w_thrs + bg_w_thrs
+        # 为防止除0，这里针对除0的情况分析后直接对于0分母设为1，因为此时分子必为0
+        Ps[Ps == 0] = 1
+        T = max(np.count_nonzero(gt), 1)
+        # TODO: T=0 或者 特定阈值下fg_w_thrs=0或者bg_w_thrs=0，这些都会包含在TPs[i]=0的情况中，
+        #  但是这里使用TPs不便于处理列表
+        precisions = TPs / Ps
+        recalls = TPs / T
+
+        numerator = (1 + self.beta) * precisions * recalls
+        denominator = np.where(numerator == 0, 1, self.beta * precisions + recalls)
+        changeable_fms = numerator / denominator
+        max_fms = changeable_fms.max()
+        return precisions, recalls, changeable_fms, max_fms
+
+    def get_results(self) -> dict:
         """
-        Compute F-measure from precision and recall arrays.
-        
-        Args:
-            precisions: Precision values
-            recalls: Recall values
-            
-        Returns:
-            F-measure values
+        Return the results about F-measure.
+
+        :return: dict(fm=dict(adp=adaptive_fm, curve=changeable_fm), pr=dict(p=precision, r=recall))
         """
-        numerator = (1 + self.beta_squared) * precisions * recalls
-        denominator = self.beta_squared * precisions + recalls
-        
-        # Handle division by zero - when both precision and recall are zero
-        valid_mask = denominator > 0
-        fmeasures = np.zeros_like(numerator)
-        fmeasures[valid_mask] = numerator[valid_mask] / denominator[valid_mask]
-        
-        return fmeasures
-    
-    def get_results(self) -> Dict[str, Dict[str, np.ndarray]]:
-        """
-        Get aggregated results across all processed samples.
-        
-        Returns:
-            Dictionary containing:
-            - fm: F-measure results (adaptive, curve, max)
-            - pr: Precision-recall curves
-            - mf: Maximum F-measure
-        """
-        if not self.adaptive_fms:
-            raise ValueError("No data processed. Call step() method first.")
-        
-        # Calculate mean values across all samples
-        adaptive_fm = np.mean(self.adaptive_fms).astype(TYPE)
-        changeable_fm = np.mean(self.changeable_fms, axis=0).astype(TYPE)
-        precision_curve = np.mean(self.precisions, axis=0).astype(TYPE)
-        recall_curve = np.mean(self.recalls, axis=0).astype(TYPE)
-        max_f = np.mean(self.max_fms).astype(TYPE)
-        
-        return {
-            'fm': {
-                'adp': adaptive_fm,      # Adaptive F-measure
-                'curve': changeable_fm,  # F-measure curve across thresholds
-                'max': max_f             # Maximum F-measure
-            },
-            'pr': {
-                'p': precision_curve,    # Precision curve
-                'r': recall_curve        # Recall curve
-            },
-            'mf': max_f                  # Maximum F-measure (convenience alias)
-        }
-    
-    def reset(self) -> None:
-        """Reset all accumulators for a new evaluation run."""
-        self._reset_accumulators()
-    
-    @property
-    def sample_count(self) -> int:
-        """Get the number of processed samples."""
-        return len(self.adaptive_fms)
+        adaptive_fm = np.mean(np.array(self.adaptive_fms, TYPE))
+        changeable_fm = np.mean(np.array(self.changeable_fms, dtype=TYPE), axis=0)
+        precision = np.mean(np.array(self.precisions, dtype=TYPE), axis=0)  # N, 256
+        recall = np.mean(np.array(self.recalls, dtype=TYPE), axis=0)  # N, 256
+        max_f = np.mean(np.array(self.max_fms))
+        return dict(fm=dict(adp=adaptive_fm, curve=changeable_fm), pr=dict(p=precision, r=recall), mf = max_f)
 
 
 class MAE(object):

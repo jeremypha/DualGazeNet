@@ -1,10 +1,3 @@
-# Copyright (c) Meta Platforms, Inc. and affiliates.
-# All rights reserved.
-
-# This source code is licensed under the license found in the
-# LICENSE file in the root directory of this source tree.
-
-
 # --------------------------------------------------------
 # Swin Transformer
 # Copyright (c) 2021 Microsoft
@@ -12,12 +5,13 @@
 # Written by Ze Liu
 # --------------------------------------------------------
 
+
+# Adopted from 
+# https://github.com/Sssssuperior/VST-plusplus/blob/main/RGB_VST/Models/swin_transformer.py
 import torch
 import torch.nn as nn
 import torch.utils.checkpoint as checkpoint
-import torch.nn.functional as F
 from timm.layers import DropPath, to_2tuple, trunc_normal_
-from timm.models import load_checkpoint
 
 
 class Mlp(nn.Module):
@@ -257,8 +251,6 @@ class SwinTransformerBlock(nn.Module):
                 shifted_x = torch.roll(x, shifts=(-self.shift_size, -self.shift_size), dims=(1, 2))
                 # partition windows
                 x_windows = window_partition(shifted_x, self.window_size)  # nW*B, window_size, window_size, C
-            else:
-                x_windows = WindowProcess.apply(x, B, H, W, C, -self.shift_size, self.window_size)
         else:
             shifted_x = x
             # partition windows
@@ -277,8 +269,6 @@ class SwinTransformerBlock(nn.Module):
             if not self.fused_window_process:
                 shifted_x = window_reverse(attn_windows, self.window_size, H, W)  # B H' W' C
                 x = torch.roll(shifted_x, shifts=(self.shift_size, self.shift_size), dims=(1, 2))
-            else:
-                x = WindowProcessReverse.apply(attn_windows, B, H, W, C, self.shift_size, self.window_size)
         else:
             shifted_x = window_reverse(attn_windows, self.window_size, H, W)  # B H' W' C
             x = shifted_x
@@ -614,68 +604,21 @@ class SwinTransformer(nn.Module):
         return flops
 
 
-def swin_transformer_T(pretrained=True, **kwargs):  # adopt transformers for tokens to token
+def swin_transformer_T():
     # for swin-T
     model = SwinTransformer(embed_dim=96, depths=[2, 2, 6, 2], num_heads=[ 3, 6, 12, 24 ],
                  window_size=7,drop_path_rate=0.2)
-    
-    args = kwargs['args']
-    if pretrained:
-        load_checkpoint(model, args.pretrained_model, use_ema=True)
-        print('Model loaded from {}'.format(args.pretrained_model))
+
     return model
     
-def swin_transformer_S(pretrained=True, checkpoint_path=None,):
+def swin_transformer_S():
     model = SwinTransformer(embed_dim=96, depths=[2, 2, 18, 2], num_heads=[ 3, 6, 12, 24 ],
                  window_size=7,drop_path_rate=0.3)
     
-    # args = kwargs['args']
-    # if pretrained:
-    #     load_checkpoint(model, args.pretrained_model, use_ema=True)
-    #     print('Model loaded from {}'.format(args.pretrained_model))
     return model
 
-def swin_transformer_B(pretrained=False):
+def swin_transformer_B():
     # for swin-B
     model = SwinTransformer(img_size=320, embed_dim=128,depths=[2,2,18,2],num_heads=[4,8,16,32],window_size=10,drop_path_rate=0.2)
-    
-    # model.default_cfg = default_cfgs['swin_transformer']
-    # args = kwargs['args']
-    # if pretrained:
-    #     pretrained_dict = torch.load(args.pretrained_model)["model"]
-    #     pretrained_dict = {k: v for k, v in pretrained_dict.items() if k in model.state_dict()}
-    #     for k, v in list(pretrained_dict.items()):
-    #         if ('attn.relative_position_index' in k) or ('attn_mask' in k):
-    #             pretrained_dict.pop(k)
-    #     if pretrained_dict.get('absolute_pos_embed') is not None:
-    #         absolute_pos_embed = pretrained_dict['absolute_pos_embed']
-    #         N1, L, C1 = absolute_pos_embed.size()
-    #         N2, C2, H, W = model.absolute_pos_embed.size()
-    #         if N1 != N2 or C1 != C2 or L != H * W:
-    #                 # logger.warning("Error in loading absolute_pos_embed, pass")
-    #             print("no")
-    #         else:
-    #             pretrained_dict['absolute_pos_embed'] = absolute_pos_embed.view(N2, H, W, C2).permute(0, 3, 1, 2)
 
-    #         # interpolate position bias table if needed
-    #     relative_position_bias_table_keys = [k for k in pretrained_dict.keys() if
-    #                                              "relative_position_bias_table" in k]
-    #     for table_key in relative_position_bias_table_keys:
-    #         table_pretrained = pretrained_dict[table_key]
-    #         table_current = model.state_dict()[table_key]
-    #         L1, nH1 = table_pretrained.size()
-    #         L2, nH2 = table_current.size()
-    #         if nH1 == nH2:
-    #             if L1 != L2:
-    #                 S1 = int(L1 ** 0.5)
-    #                 S2 = int(L2 ** 0.5)
-    #                 table_pretrained_resized = F.interpolate(
-    #                         table_pretrained.permute(1, 0).view(1, nH1, S1, S1),
-    #                         size=(S2, S2), mode='bicubic')
-    #                 pretrained_dict[table_key] = table_pretrained_resized.view(nH2, L2).permute(1, 0)
-    #     model.load_state_dict(pretrained_dict, strict=False)
-        
-    #     #load_checkpoint(model, args.pretrained_model, use_ema=True)
-    #     print('Model loaded from {}'.format(args.pretrained_model))
-        
     return model

@@ -33,7 +33,7 @@ class Config():
             'hiera*_l': 'sam2_hiera_large.pt',
             'hiera_l': 'sam2_hiera_large.pt', 
             'swin_b': 'swin_base_patch4_window7_224.pth',
-            'pvt_v2_b5': 'pvt_v2_b5_22k.pth'
+            'pvt_v2_b5': 'pvt_v2_b5.pth'
         }
 
         self.weights = {}
