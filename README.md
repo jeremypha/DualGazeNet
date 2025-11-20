@@ -35,7 +35,7 @@ Clone this repository
 
 ```bash
 git clone https://github.com/jeremypha/DualGazeNet.git
-cd DGN
+cd DualGazeNet
 ```
 
 #### Step 2:
@@ -81,11 +81,11 @@ pip install -r requirements.txt
 ````
 All datasets are publicly available from their official sources: [DUTS](http://saliencydetection.net/duts/), [DUT-OMRON](http://saliencydetection.net/dut-omron/), [HKU-IS](https://i.cs.hku.hk/~yzyu/research/deep_saliency.html), [ECSSD](https://www.cse.cuhk.edu.hk/leojia/projects/hsaliency/dataset.html), and [PASCAL-S](https://cbs.ic.gatech.edu/salobj/).
 
-For convenience, we provide **pre-configured versions** with consistent formatting in our [Google Drive Folder](), which also includes datasets for **COD** and **USOD** tasks.
+For convenience, we provide **pre-configured versions** with consistent formatting in our [Google Drive Folder](https://drive.google.com/drive/folders/1CNz9q5MHSsYV9jgqjK-tPd2ZxZIMjUfU?usp=drive_link), which also includes datasets for **COD** and **USOD** tasks.
 
 ##### Train
 
-Download [Backbones]() and save it in ./weights
+Download [Pretrained Backbones](https://drive.google.com/drive/folders/118CyQETQtxCrIo9aejBpBdIT_L06tiSy?usp=drive_link) and save it in ./weights
 
 run ./scripts/train.sh
 
@@ -134,22 +134,6 @@ Download our pretrained checkpoint or train your own model!
 
 
 run ./scripts/inference.sh
-```bash
-sh ./scripts/inference.sh
-```
-
-example inference.sh
-```
-python inference.py \
-    --mode valid \
-    --task SOD \
-    --backbone L \
-    --input_size 352 \
-    --device cuda \
-    --resume_cpt <path>/<checkpoint>.pth \
-    --visualize True \
-    --pred_dir "./pred"
-```
 
 
 Here you can download saliency maps of SOD/COD/USOD tasks from other awesome models: [BaiduNetDisk](https://pan.baidu.com/s/12qQV7aBJCzPc1pVTDsO_QQ?pwd=fq3u)
