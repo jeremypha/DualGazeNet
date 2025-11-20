@@ -16,7 +16,7 @@ DualGazeNet is a biologically inspired Transformer framework for salient object 
 
 ## Overview
 <p align="center">
-  <img src="DGN_Overview.png" alt="arch" width="80%">
+  <img src="DGN_Overview.png" alt="arch" width="100%">
 </p>
 
 
