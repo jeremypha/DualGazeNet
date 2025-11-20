@@ -86,7 +86,12 @@ For convenience, we provide **pre-configured versions** with consistent formatti
 
 Download [Pretrained Backbones](https://pan.baidu.com/s/1Ovd7A_fVi7uxjeY2Z3IzjA?pwd=f116) and save it in ./weights
 
-run ./scripts/train.sh
+```shell
+./scripts/train.sh TASK BACKBONE
+
+# Example: ./scripts/train.sh SOD L
+
+```
 
 ##### Evaluation and Predicted Saliency Map 
 
@@ -109,8 +114,13 @@ Model weights and corresponding prediction maps for all configurations are avail
 | COD | Hiera-L | 512×512 | 247.56 | 238.52 | 43 | [checkpoint](https://drive.google.com/file/d/1MiwAQzPIrgIHXYf_-Z3TrkhqCPS_ERY-/view?usp=drive_link) |  [Results](https://drive.google.com/file/d/1eGowhy68GqZtI8PM8FX_vvPrImEanh4l/view?usp=drive_link) |
 | USOD | Hiera-L | 512×512 | 247.56 | 238.52 | 43 | [checkpoint](https://drive.google.com/file/d/1NtHbcfPhRXq6p7TUmA4YwFelEDpVeymT/view?usp=drive_link) |  [Results](https://drive.google.com/file/d/15m8PFNGzORmS8QU0HE8P7wEro_GzfWiB/view?usp=drive_link) |
 
+```shell
+./scripts/inference.sh TASK BACKBONE CHECKPOINT
 
-run ./scripts/inference.sh
+# Example: ./scripts/inference.sh SOD L ./output/epoch_0.pth
+
+```
+
 
 ## Quantitative Comparison
 <p align="center">
