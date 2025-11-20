@@ -101,7 +101,7 @@ Model weights and corresponding prediction maps for all configurations are avail
 
 | Task | Backbone | Resolution | Params(M) | FLOPs(G) | FPS | Checkpoint | Saliency Map |
 | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| SOD | Hiera-L | 512×512 | 247.56 | 238.52 | 43 | [checkpoint]() |  [Results](https://drive.google.com/file/d/1ndHItAE1U9xEPMQPXHCuXn7VSCUlpiPQ/view?usp=drive_link) |
+| SOD | Hiera-L | 512×512 | 247.56 | 238.52 | 43 | [checkpoint](https://drive.google.com/file/d/1yrZqmhb0wNuvmOVb8GfBVUkRjBK-F6hi/view?usp=drive_link) |  [Results](https://drive.google.com/file/d/1ndHItAE1U9xEPMQPXHCuXn7VSCUlpiPQ/view?usp=drive_link) |
 | SOD | Hiera-L | 352×352 | 247.56 | 139.07 | 45 | [checkpoint](https://drive.google.com/file/d/17GSLdBkXw2MaX-9EOVU2UisCldMFuECl/view?usp=drive_link) |  [Results](https://drive.google.com/file/d/1RvOBBJ0ypnnTBFzVi1MgEbM-vN8TPZ5n/view?usp=drive_link) |
 | SOD | Hiera-L | 224×224 | 247.56 | 48.59 | 46 | [checkpoint](https://drive.google.com/file/d/1t1UPzjkBYSQfoTv2voI3Dbz-b3XErLrc/view?usp=drive_link) |  [Results](https://drive.google.com/file/d/1HCCBoJgQw5EEl1ABE7M0XAOAJz2BFDDl/view?usp=drive_link) |
 | SOD | Hiera\*-L | 512×512 | 162.32 | 217.11 | 48 | [checkpoint](https://drive.google.com/file/d/1WteXk2Qx7Erh0cKnQOiW3yeuCKvlXIfC/view?usp=drive_link) |  [Results](https://drive.google.com/file/d/1ndHItAE1U9xEPMQPXHCuXn7VSCUlpiPQ/view?usp=drive_link) |
@@ -113,8 +113,8 @@ Model weights and corresponding prediction maps for all configurations are avail
 | SOD | Hiera\*-B | 512×512 | 49.23 | 83.47 | 72 | [checkpoint](https://drive.google.com/file/d/1yE-X8u1PQUHSs9EvBMsALbwyZBaJuM29/view?usp=drive_link) |  [Results](https://drive.google.com/file/d/1jSWIKtamwFobkIb3UQwfazNdLH9pDxXu/view?usp=drive_link) |
 | SOD | Hiera\*-B | 352×352 | 49.23 | 39.13 | 77 | [checkpoint](https://drive.google.com/file/d/1NaSONPsHWTKAqxYk7BFgLdIhPYes_YPT/view?usp=drive_link) |  [Results](https://drive.google.com/file/d/15X6E3XKVJZT_8ZIhA2if6AwQnZ6mFsGs/view?usp=drive_link) |
 | SOD | Hiera\*-B | 224×224 | 49.23 | 18.86 | 78 | [checkpoint](https://drive.google.com/file/d/1nxVqLB6ikzy56UMQEeYfE3l6BA1jE-a5/view?usp=drive_link) |  [Results](https://drive.google.com/file/d/1u1Bo7EvEk08vy8vHAC_1YWA9eWjYoZYp/view?usp=drive_link) |
-| COD | Hiera-L | 512×512 | 247.56 | 238.52 | 43 | [checkpoint]() |  [Results]() |
-| USOD | Hiera-L | 512×512 | 247.56 | 238.52 | 43 | [checkpoint]() |  [Results]() |
+| COD | Hiera-L | 512×512 | 247.56 | 238.52 | 43 | [checkpoint](https://drive.google.com/file/d/1MiwAQzPIrgIHXYf_-Z3TrkhqCPS_ERY-/view?usp=drive_link) |  [Results](https://drive.google.com/file/d/1eGowhy68GqZtI8PM8FX_vvPrImEanh4l/view?usp=drive_link) |
+| USOD | Hiera-L | 512×512 | 247.56 | 238.52 | 43 | [checkpoint](https://drive.google.com/file/d/1NtHbcfPhRXq6p7TUmA4YwFelEDpVeymT/view?usp=drive_link) |  [Results](https://drive.google.com/file/d/15m8PFNGzORmS8QU0HE8P7wEro_GzfWiB/view?usp=drive_link) |
 
 
 run ./scripts/inference.sh
